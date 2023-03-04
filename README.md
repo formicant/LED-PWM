@@ -21,7 +21,18 @@ Encoder GND  →         GND─┤10     11├─PD6 (ICP)
                            └─────────┘
 ```
 
+
+## Fuses
+
+Useful tool: [Fuse calculator](http://eleccelerator.com/fusecalc/fusecalc.php?chip=attiny2313)
+
+L:DF (SUT1)
+H:DF (SPIEN: serial programming enabled)
+E:FF (nothing)
+
+
 ## Opeartion
 
 16-bit PWM channel A is used in Fast PWM 9-bit mode.
+
 
