@@ -1,0 +1,43 @@
+; ************************************************************
+; PROJECT:
+; AUTHOR:
+; ************************************************************
+
+; Micro + software running
+; ------------------------------------------------------------
+.MICRO "AT90S2313"
+.PROGRAM "pwm.asm"
+.TARGET "pwm.hex"
+
+.TRACE              ; Activate micro trace
+
+; Following lines are optional; if not included
+; exactly these values are taken by default
+; ------------------------------------------------------------
+.POWER VDD=5 VSS=0  ; Power nodes
+.CLOCK 1meg         ; Micro clock
+.STORE 250m         ; Trace (micro+signals) storage time
+
+; Micro nodes: RESET, PB0-PB7, PD0-PD5, ACO, TIM1OVF
+; Define here the hardware around the micro
+; --------------------------------------------------------
+
+.plot v(pd2) v(pd3) v(pb3)
+
+; Optional type: MONOSTABLE(t_delay), LATCHED
+K2 pd2 gnd MONOSTABLE(0.5)
+K3 pd3 gnd MONOSTABLE(0.5)
+
+; LEDs
+;D1 VDD pb0
+;D2 VDD pb1
+;D3 VDD pb2
+;D4 VDD pb3
+;D5 VDD pb4
+;D6 VDD pb5
+;D7 VDD pb6
+;D8 VDD pb7
+
+
+
+

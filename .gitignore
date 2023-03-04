@@ -1,0 +1,8 @@
+*.dat
+*.err
+*.out
+*.lis
+*.map
+*.wat
+*.obj
+*.ly1
