@@ -2,24 +2,27 @@
 .include "tn2313def.inc"
 
 ; TCCR1A modes
-.equ pwm_clear  = 1 << COM1A1
-.equ pwm_8bit   = 1 << WGM10
-.equ pwm_9bit   = 1 << WGM11
-.equ pwm_10bit  = (1 << WGM10) | (1 << WGM11)
-.equ pwm_icr_a  = 1 << PWM11
+.equ pwm_clear  = (1<<COM1A1)
+.equ pwm_8bit   = (1<<WGM10)
+.equ pwm_9bit   = (1<<WGM11)
+.equ pwm_10bit  = (1<<WGM10) | (1<<WGM11)
+.equ pwm_icr_a  = (1<<PWM11)
 ; TCCR1B modes
-.equ pwm_icr_b  = 1 << WGM13
-.equ pwm_fast   = 1 << WGM12
-.equ pwm_scale1 = 1 << CS10
+.equ pwm_icr_b  = (1<<WGM13)
+.equ pwm_fast   = (1<<WGM12)
+.equ pwm_scale1 = (1<<CS10)
 
 
-; Port B output pin
-.equ led_pwm  = (1 << PORTB3)
+; Port B output pins
+.equ led_pwm       = (1<<PORTB3)
+.equ led_debug     = (1<<PORTB2)
+.equ output_mask_b = led_pwm | led_debug
 
 ; Port D input pins
-.equ encoder_clk  = (1 << PIND2)
-.equ encoder_dt   = (1 << PIND3)
-.equ encoder_mask = encoder_clk | encoder_dt
+.equ encoder_clk   = (1<<PIND2)
+.equ encoder_dt    = (1<<PIND3)
+.equ encoder_mask  = encoder_clk | encoder_dt
+.equ output_mask_d = 0  ; all pins are inputs
 
 ; Constants
 ; .equ pwm_period = 512
@@ -34,26 +37,25 @@
 
 
 ; Interrupt vector table
-; No interrupts are used
-    rjmp reset ; RES  Reset
-    reti       ; INT0 External Interrupt Request 0
-    reti       ; INT1 External Interrupt Request 1
-    reti       ; ICP1 Timer/Counter1 Capture Event
-    reti       ; OC1A Timer/Counter1 Compare Match A
-    reti       ; OVF1 Timer/Counter1 Overflow
-    reti       ; OVF0 Timer/Counter0 Overflow
-    reti       ; URXC USART, Rx Complete
-    reti       ; UDRE USART Data Register Empty
-    reti       ; UTXC USART, Tx Complete
-    reti       ; ACI  Analog Comparator
-    reti       ; PCI
-    reti       ; OC1B
-    reti       ; OC0A
-    reti       ; OC0B
-    reti       ; USI_START USI Start Condition
-    reti       ; USI_OVF   USI Overflow
-    reti       ; ERDY
-    reti       ; WDT  Watchdog Timer Overflow
+    rjmp reset      ; RES  Reset
+    reti            ; INT0 External Interrupt Request 0
+    reti            ; INT1 External Interrupt Request 1
+    reti            ; ICP1 Timer/Counter1 Capture Event
+    reti            ; OC1A Timer/Counter1 Compare Match A
+    reti            ; OVF1 Timer/Counter1 Overflow
+    reti            ; OVF0 Timer/Counter0 Overflow
+    reti            ; URXC USART, Rx Complete
+    reti            ; UDRE USART Data Register Empty
+    reti            ; UTXC USART, Tx Complete
+    rjmp comparator ; ACI  Analog Comparator
+    reti            ; PCI
+    reti            ; OC1B
+    reti            ; OC0A
+    reti            ; OC0B
+    reti            ; USI_START USI Start Condition
+    reti            ; USI_OVF   USI Overflow
+    reti            ; ERDY
+    reti            ; WDT  Watchdog Timer Overflow
 
 
 ; PWM level table
@@ -105,12 +107,26 @@ reset:
     out  SPL, tmp
 
     ; initialize input ports with pull-up resistors
-    ldi  tmp, encoder_mask
+    ldi  tmp, ~output_mask_b
+    out  PORTB, tmp
+    ldi  tmp, ~output_mask_d
     out  PORTD, tmp
 
-    ; initialize output port
-    ldi  tmp, led_pwm
+    ; initialize output ports
+    ldi  tmp, output_mask_b
     out  DDRB, tmp
+    ldi  tmp, output_mask_d
+    out  DDRD, tmp
+
+    ; initialize analog comparator
+    ; enable interrupt by both rising and falling edges
+    ;ldi  tmp, (1<<ACIE)
+    ;out  ACSR, tmp
+    ; disable digital input on analog comparator pins
+    ;ldi  tmp, (1<<AIN0D) | (1<<AIN1D)
+    ;out  DIDR, tmp
+    ; enable interupts
+    ;sei
 
     ; initialize PWM timer
 
@@ -210,4 +226,15 @@ increment_level:
     breq input_loop
     inc  level
     rjmp set_level
+
+
+; Analog comparator interrupt
+comparator:
+    ; send comparator output to led_debug
+    in   tmp, ACSR
+    bst  tmp, ACO
+    clr  tmp
+    bld  tmp, PORTB2
+    out  PORTB, tmp
+    reti
 

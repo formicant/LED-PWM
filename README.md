@@ -14,9 +14,9 @@ A program for `ATTiny2313` for controlling LED brightness using a rotary encoder
                (XTAL2) PA1─┤4      17├─PB5 (MOSI/DI/SDA/PCINT5)
                (XTAL1) PA0─┤5      16├─PB4 (OC1B/PCINT4)
 Encoder CLK  →  (INT0) PD2─┤6      15├─PB3 (OC1A/PCINT3)  →  LED
-Encoder DT   →  (INT1) PD3─┤7      14├─PB2 (OC0A/PCINT2)
-                  (T0) PD4─┤8      13├─PB1 (AIN1/PCINT1)
-             (OC0B/T1) PD5─┤9      12├─PB0 (AIN0/PCINT0)
+Encoder DT   →  (INT1) PD3─┤7      14├─PB2 (OC0A/PCINT2)  →  Debug LED
+                  (T0) PD4─┤8      13├─PB1 (AIN1/PCINT1)  ←  Comparator -
+             (OC0B/T1) PD5─┤9      12├─PB0 (AIN0/PCINT0)  ←  Comparator +
 Encoder GND  →         GND─┤10     11├─PD6 (ICP)
                            └─────────┘
 ```
@@ -24,11 +24,34 @@ Encoder GND  →         GND─┤10     11├─PD6 (ICP)
 
 ## Fuses
 
-Useful tool: [Fuse calculator](http://eleccelerator.com/fusecalc/fusecalc.php?chip=attiny2313)
+- **Low:** `E4` (modified)
+  |   fuse | bits | value |  state   | description
+  |-------:|:----:|:-----:|:--------:|:------------
+  | CKDIV8 |    7 |    1  | modified | no prescaling
+  |  CKOUT |    6 |    1  | default  | no clock output
+  |    SUT | 5..4 |   10  | default  | slowly rising power
+  |  CKSEL | 3..0 | 0100  | default  | internal RC oscillator 8 MHz
+  
+- **High:** `DF` (default)
+  |     fuse | bits | value |  state   | description
+  |---------:|:----:|:-----:|:--------:|:------------
+  |     DWEN |    7 |    1  | default  | debugWire disabled
+  |   EESAVE |    6 |    1  | default  | do not preserve EEPROM when flashing
+  |    SPIEN |    5 |    0  | default  | serial programming enabled
+  |    WDTON |    4 |    1  | default  | watchdog safety level 1
+  | BODLEVEL | 3..1 |    1  | default  | BOD disabled
+  | RSTDISBL |    0 |    1  | default  | reset enabled
+  
+- **Extended:** `FF` (default)
+  |      fuse | bits | value |  state   | description
+  |----------:|:----:|:-----:|:--------:|:------------
+  | (unused)  | 7..1 |    1  | default  | 
+  | SELFPRGEN |    0 |    1  | default  | self-proggramming disabled
 
-L:DF (SUT1)
-H:DF (SPIEN: serial programming enabled)
-E:FF (nothing)
+Fuse programming:
+``` bash
+avrdude -c usbasp-clone -p t2313 -U lfuse:w:0xE4:m
+```
 
 
 ## Opeartion

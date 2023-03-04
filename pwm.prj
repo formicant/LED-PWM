@@ -22,11 +22,13 @@
 ; Define here the hardware around the micro
 ; --------------------------------------------------------
 
-.plot v(pd2) v(pd3) v(pb3)
+.plot v(pd2) v(pd3) v(pb3) v(pb0) v(pb1) v(pb2)
 
 ; Optional type: MONOSTABLE(t_delay), LATCHED
 K2 pd2 gnd MONOSTABLE(0.5)
 K3 pd3 gnd MONOSTABLE(0.5)
+V pd0 VDD SLIDER_1(0 5)
+V pd1 VDD SLIDER_2(0 5)
 
 ; LEDs
 ;D1 VDD pb0
@@ -37,6 +39,7 @@ K3 pd3 gnd MONOSTABLE(0.5)
 ;D6 VDD pb5
 ;D7 VDD pb6
 ;D8 VDD pb7
+
 
 
 
