@@ -617,13 +617,13 @@
 .equ	UTXCaddr	= 0x0009	; USART, Tx Complete
 .equ	UTXC0addr	= 0x0009	; For compatibility
 .equ	ACIaddr	= 0x000a	; Analog Comparator
-.equ	PCIaddr	= 0x000b	;
-.equ	OC1Baddr	= 0x000c	;
-.equ	OC0Aaddr	= 0x000d	;
-.equ	OC0Baddr	= 0x000e	;
+.equ	PCIaddr	= 0x000b	; Pin Change Interrupt Request
+.equ	OC1Baddr	= 0x000c	; Timer/Counter1 Compare Match B
+.equ	OC0Aaddr	= 0x000d	; Timer/Counter0 Compare Match A
+.equ	OC0Baddr	= 0x000e	; Timer/Counter0 Compare Match B
 .equ	USI_STARTaddr	= 0x000f	; USI Start Condition
 .equ	USI_OVFaddr	= 0x0010	; USI Overflow
-.equ	ERDYaddr	= 0x0011	;
+.equ	ERDYaddr	= 0x0011	; EEPROM Ready
 .equ	WDTaddr	= 0x0012	; Watchdog Timer Overflow
 
 .equ	INT_VECTORS_SIZE	= 19	; size in words

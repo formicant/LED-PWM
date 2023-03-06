@@ -48,14 +48,16 @@
     reti            ; UDRE USART Data Register Empty
     reti            ; UTXC USART, Tx Complete
     rjmp comparator ; ACI  Analog Comparator
-    reti            ; PCI
-    reti            ; OC1B
-    reti            ; OC0A
-    reti            ; OC0B
+    reti            ; PCI0 Pin Change Interrupt Request 0
+    reti            ; OC1B Timer/Counter1 Compare Match B
+    reti            ; OC0A Timer/Counter0 Compare Match A
+    reti            ; OC0B Timer/Counter0 Compare Match B
     reti            ; USI_START USI Start Condition
     reti            ; USI_OVF   USI Overflow
-    reti            ; ERDY
+    reti            ; ERDY EEPROM Ready
     reti            ; WDT  Watchdog Timer Overflow
+    reti            ; PCI1 Pin Change Interrupt Request 1
+    reti            ; PCI2 Pin Change Interrupt Request 2
 
 
 ; PWM level table
@@ -146,7 +148,7 @@ reset:
 
     ; initialize register values
     clr  zero
-    clr  level
+    ldi  level, 31
 
 set_level:
     ; get address in the level table
@@ -173,8 +175,8 @@ encoder_turning_debounce:
     in   input, PIND
     andi input, encoder_mask
     brne input_loop
-    sbiw XL, 1
-    nop  ; debouncing loop takes 8 cycles = 1 us
+    sbiw XL, 1  ; dec X
+    nop  ; to make debouncing loop take 8 cycles = 1 us
     brne encoder_turning_debounce
 
 encoder_turning:
@@ -186,8 +188,8 @@ encoder_turned_debounce:
     in   input, PIND
     andi input, encoder_mask
     breq encoder_turning
-    sbiw XL, 1
-    nop  ; debouncing loop takes 8 cycles = 1 us
+    sbiw XL, 1  ; dec X
+    nop  ; to make debouncing loop take 8 cycles = 1 us
     brne encoder_turned_debounce
 
 encoder_turned:
