@@ -37,27 +37,27 @@
 
 
 ; Interrupt vector table
-    rjmp reset      ; RES  Reset
-    reti            ; INT0 External Interrupt Request 0
-    reti            ; INT1 External Interrupt Request 1
-    reti            ; ICP1 Timer/Counter1 Capture Event
-    reti            ; OC1A Timer/Counter1 Compare Match A
-    reti            ; OVF1 Timer/Counter1 Overflow
-    reti            ; OVF0 Timer/Counter0 Overflow
-    reti            ; URXC USART, Rx Complete
-    reti            ; UDRE USART Data Register Empty
-    reti            ; UTXC USART, Tx Complete
-    rjmp comparator ; ACI  Analog Comparator
-    reti            ; PCI0 Pin Change Interrupt Request 0
-    reti            ; OC1B Timer/Counter1 Compare Match B
-    reti            ; OC0A Timer/Counter0 Compare Match A
-    reti            ; OC0B Timer/Counter0 Compare Match B
-    reti            ; USI_START USI Start Condition
-    reti            ; USI_OVF   USI Overflow
-    reti            ; ERDY EEPROM Ready
-    reti            ; WDT  Watchdog Timer Overflow
-    reti            ; PCI1 Pin Change Interrupt Request 1
-    reti            ; PCI2 Pin Change Interrupt Request 2
+    rjmp reset ; RES  Reset
+    reti       ; INT0 External Interrupt Request 0
+    reti       ; INT1 External Interrupt Request 1
+    reti       ; ICP1 Timer/Counter1 Capture Event
+    reti       ; OC1A Timer/Counter1 Compare Match A
+    reti       ; OVF1 Timer/Counter1 Overflow
+    reti       ; OVF0 Timer/Counter0 Overflow
+    reti       ; URXC USART, Rx Complete
+    reti       ; UDRE USART Data Register Empty
+    reti       ; UTXC USART, Tx Complete
+    reti       ; ACI  Analog Comparator
+    reti       ; PCI0 Pin Change Interrupt Request 0
+    reti       ; OC1B Timer/Counter1 Compare Match B
+    reti       ; OC0A Timer/Counter0 Compare Match A
+    reti       ; OC0B Timer/Counter0 Compare Match B
+    reti       ; USI_START USI Start Condition
+    reti       ; USI_OVF   USI Overflow
+    reti       ; ERDY EEPROM Ready
+    reti       ; WDT  Watchdog Timer Overflow
+    reti       ; PCI1 Pin Change Interrupt Request 1
+    reti       ; PCI2 Pin Change Interrupt Request 2
 
 
 ; PWM level table
@@ -119,16 +119,6 @@ reset:
     out  DDRB, tmp
     ldi  tmp, output_mask_d
     out  DDRD, tmp
-
-    ; initialize analog comparator
-    ; enable interrupt by both rising and falling edges
-    ;ldi  tmp, (1<<ACIE)
-    ;out  ACSR, tmp
-    ; disable digital input on analog comparator pins
-    ;ldi  tmp, (1<<AIN0D) | (1<<AIN1D)
-    ;out  DIDR, tmp
-    ; enable interupts
-    ;sei
 
     ; initialize PWM timer
 
@@ -228,15 +218,3 @@ increment_level:
     breq input_loop
     inc  level
     rjmp set_level
-
-
-; Analog comparator interrupt
-comparator:
-    ; send comparator output to led_debug
-    in   tmp, ACSR
-    bst  tmp, ACO
-    clr  tmp
-    bld  tmp, PORTB2
-    out  PORTB, tmp
-    reti
-
