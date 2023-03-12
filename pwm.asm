@@ -27,7 +27,7 @@
 ; Constants
 ; .equ pwm_period = 512
 ; (custom PWM periods are not supported by VMLAB emulator)
-.equ bounce_period = 1000  ; microseconds
+.equ bounce_period = 100  ; microseconds
 
 ; Register aliases
 .def zero  = r16
@@ -61,40 +61,8 @@
 
 
 ; PWM level table
-; quadratic curve, 32 levels
 levels:
-    .dw  0     ; off
-    .dw  0     ; minimum
-    .dw  1
-    .dw  2
-    .dw  5
-    .dw  9
-    .dw  14
-    .dw  20
-    .dw  28
-    .dw  36
-    .dw  46
-    .dw  57
-    .dw  69
-    .dw  82
-    .dw  96
-    .dw  111
-    .dw  128
-    .dw  145
-    .dw  164
-    .dw  184
-    .dw  205
-    .dw  227
-    .dw  250
-    .dw  275
-    .dw  300
-    .dw  327
-    .dw  355
-    .dw  384
-    .dw  414
-    .dw  445
-    .dw  478
-    .dw  511   ; maximum
+.include "levels.asm"
 levels_end:
 .equ level_count = levels_end - levels
 
@@ -138,7 +106,7 @@ reset:
 
     ; initialize register values
     clr  zero
-    ldi  level, 31
+    ldi  level, 0
 
 set_level:
     ; get address in the level table
@@ -218,3 +186,4 @@ increment_level:
     breq input_loop
     inc  level
     rjmp set_level
+
