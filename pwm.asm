@@ -15,8 +15,7 @@
 
 ; Port B output pins
 .equ led_pwm       = (1<<PORTB3)
-.equ led_debug     = (1<<PORTB2)
-.equ output_mask_b = led_pwm | led_debug
+.equ output_mask_b = led_pwm
 
 ; Port D input pins
 .equ encoder_clk   = (1<<PIND2)
@@ -25,39 +24,39 @@
 .equ output_mask_d = 0  ; all pins are inputs
 
 ; Constants
-; .equ pwm_period = 512
-; (custom PWM periods are not supported by VMLAB emulator)
 .equ bounce_period = 100  ; microseconds
+.equ sleep_time  = 10000  ; times ~300 microseconds
 
 ; Register aliases
 .def zero  = r16
 .def tmp   = r17
 .def input = r18
-.def level = r19
+.def count = r19
+.def level = r20
 
 
 ; Interrupt vector table
-    rjmp reset ; RES  Reset
-    reti       ; INT0 External Interrupt Request 0
-    reti       ; INT1 External Interrupt Request 1
-    reti       ; ICP1 Timer/Counter1 Capture Event
-    reti       ; OC1A Timer/Counter1 Compare Match A
-    reti       ; OVF1 Timer/Counter1 Overflow
-    reti       ; OVF0 Timer/Counter0 Overflow
-    reti       ; URXC USART, Rx Complete
-    reti       ; UDRE USART Data Register Empty
-    reti       ; UTXC USART, Tx Complete
-    reti       ; ACI  Analog Comparator
-    reti       ; PCI0 Pin Change Interrupt Request 0
-    reti       ; OC1B Timer/Counter1 Compare Match B
-    reti       ; OC0A Timer/Counter0 Compare Match A
-    reti       ; OC0B Timer/Counter0 Compare Match B
-    reti       ; USI_START USI Start Condition
-    reti       ; USI_OVF   USI Overflow
-    reti       ; ERDY EEPROM Ready
-    reti       ; WDT  Watchdog Timer Overflow
-    reti       ; PCI1 Pin Change Interrupt Request 1
-    reti       ; PCI2 Pin Change Interrupt Request 2
+    rjmp reset  ; RES  Reset
+    rjmp wakeup ; INT0 External Interrupt Request 0
+    rjmp wakeup ; INT1 External Interrupt Request 1
+    reti        ; ICP1 Timer/Counter1 Capture Event
+    reti        ; OC1A Timer/Counter1 Compare Match A
+    reti        ; OVF1 Timer/Counter1 Overflow
+    reti        ; OVF0 Timer/Counter0 Overflow
+    reti        ; URXC USART, Rx Complete
+    reti        ; UDRE USART Data Register Empty
+    reti        ; UTXC USART, Tx Complete
+    reti        ; ACI  Analog Comparator
+    reti        ; PCI0 Pin Change Interrupt Request 0
+    reti        ; OC1B Timer/Counter1 Compare Match B
+    reti        ; OC0A Timer/Counter0 Compare Match A
+    reti        ; OC0B Timer/Counter0 Compare Match B
+    reti        ; USI_START USI Start Condition
+    reti        ; USI_OVF   USI Overflow
+    reti        ; ERDY EEPROM Ready
+    reti        ; WDT  Watchdog Timer Overflow
+    reti        ; PCI1 Pin Change Interrupt Request 1
+    reti        ; PCI2 Pin Change Interrupt Request 2
 
 
 ; PWM level table
@@ -88,25 +87,27 @@ reset:
     ldi  tmp, output_mask_d
     out  DDRD, tmp
 
+    ; initizlize power consumption (ATTiny2313A only)
+    ; ldi  tmp, (1<<PRUSART) | (1<<PRUSI) | (1<<PRTIM0)
+    ; out  PRR, tmp
+
+    ; initialize interrupt mask
+    ldi  tmp, (1<<INT0) | (1<<INT1)
+    out  GIMSK, tmp
+
     ; initialize PWM timer
-
-    ; (custom PWM periods are not supported by VMLAB emulator.
-    ; New ATTiny2313A models should support this)
-    ; ldi  XL, low (pwm_period - 1)
-    ; ldi  XH, high(pwm_period - 1)
-    ; out  ICR1H, XH
-    ; out  ICR1L, XL
-
     ; fast PWM mode, no clock prescaling
     ldi  tmp, pwm_fast | pwm_scale1
     out  TCCR1B, tmp
-    ; set on start, clear on match, 9-bit PWM
-    ldi  tmp, pwm_clear | pwm_9bit
-    out  TCCR1A, tmp
 
     ; initialize register values
     clr  zero
-    ldi  level, 0
+    clr  count
+    clr  level
+
+    ; start with PWM turned off
+    rjmp turn_off
+
 
 set_level:
     ; get address in the level table
@@ -126,13 +127,22 @@ set_level:
 
 input_loop:
     ; wait until both encoder pins are active (low signal) for bounce_period
+    ; or until nothing happens during sleep_time
+    ldi  YL, low  (sleep_time)
+    ldi  YH, high (sleep_time)
+
+sleep_check:
     ldi  XL, low (bounce_period)
     ldi  XH, high(bounce_period)
+    dec  count
+    brne encoder_turning_debounce
+    sbiw YL, 1  ; dec Y
+    breq go_to_sleep
 
 encoder_turning_debounce:
     in   input, PIND
     andi input, encoder_mask
-    brne input_loop
+    brne sleep_check
     sbiw XL, 1  ; dec X
     nop  ; to make debouncing loop take 8 cycles = 1 us
     brne encoder_turning_debounce
@@ -166,9 +176,8 @@ counter_clockwise:
     brne set_level
 
 turn_off:
-    clr  tmp
-    out  TCCR1A, tmp
-    out  PORTB, tmp
+    out  TCCR1A, zero
+    out  PORTB, zero
     rjmp input_loop
 
 clockwise:
@@ -186,4 +195,25 @@ increment_level:
     breq input_loop
     inc  level
     rjmp set_level
+
+
+; Activate the controller's sleep mode
+go_to_sleep:
+    ldi  tmp, (1<<SE)   ; enable sleep mode
+    tst  level          ; if level != 0
+    brne set_sleep_mode ;   then, idle sleep mode
+    ori  tmp, (1<<SM0)  ;   else, power-down sleep mode
+set_sleep_mode:
+    out  MCUCR, tmp
+    ; enable interrupts to wake up when the encoder is turned
+    sei
+    sleep
+    rjmp input_loop
+
+
+; Wake up from sleep when the encoder sends a signal
+wakeup:
+    cli  ; disable interrupts
+    reti
+
 
