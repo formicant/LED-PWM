@@ -84,7 +84,7 @@ The PWM level value 0 does not switch off the LEDs completely. It corresponds to
 
 ### Rotary encoder
 
-A rotary encoder is used to change the PWM levels.
+A rotary encoder is used to change the PWM levels. It is connected to `PD2` and `PD3` pins of the controller.
 
 When inactive, both encoder pins (`clk` and `dt`) have high level (logical one).
 The program waits until there's low level (logical zero) on both pins, then determines the rotation direction by noticing which of the pins  turns to logical one first.
@@ -94,7 +94,9 @@ In order to mitigate contact bouncing, each signal level on the encoder pins sho
 ### Sleep mode
 
 When the encoder is inactive for `sleep_time` (about 3 s), the controller enters the sleep mode.
+
 If the PWM level is 0 (the LEDs are switched off), the deepest _Power Down_ sleep mode is used. Otherwise, the _Idle_ sleep mode is used allowing the PWM to work.
 
-The rotary encoder is connected to the pins `PD2` (`INT0`) and `PD3` (`INT1`) which can be used as interrupt sources to wake up the controller when the decoder is turned.
+The pins the rotary encoder is connected to (`PD2` and `PD3`) are also used as external interrupt sources (`INT0` and `INT1`) which can wake up the controller from sleep when the decoder is turned.
+
 The interrupts are disabled during normal operation and enabled during sleep.
