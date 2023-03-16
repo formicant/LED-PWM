@@ -24,8 +24,8 @@
 .equ output_mask_d = 0  ; all pins are inputs
 
 ; Constants
-.equ bounce_period = 50  ; times 2 µs = 100 µs
-.equ sleep_time  = 5000  ; times ~580 µs = ~3 s
+.equ bounce_period = 50  ; times ~2 µs = ~100 µs
+.equ sleep_time  = 5000  ; times ~600 µs = ~3 s
 
 ; Register aliases
 .def zero  = r16
@@ -144,7 +144,6 @@ encoder_turning_debounce:
     andi input, encoder_mask
     brne sleep_check
     sbiw XL, 1  ; dec X
-    nop  ; to make debouncing loop take 8 cycles = 2 µs
     brne encoder_turning_debounce
 
 encoder_turning:
@@ -157,7 +156,6 @@ encoder_turned_debounce:
     andi input, encoder_mask
     breq encoder_turning
     sbiw XL, 1  ; dec X
-    nop  ; to make debouncing loop take 8 cycles = 2 µs
     brne encoder_turned_debounce
 
 encoder_turned:
@@ -186,7 +184,7 @@ clockwise:
     brne increment_level
 
 turn_on:
-    ldi  tmp, pwm_clear | pwm_9bit
+    ldi  tmp, pwm_clear | pwm_8bit
     out  TCCR1A, tmp
 
 increment_level:
@@ -216,4 +214,5 @@ wakeup:
     cli  ; disable interrupts
     out  MCUCR, zero
     reti
+
 

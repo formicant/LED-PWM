@@ -1,13 +1,12 @@
-from math import ceil
-
-
-pwm_period = 512
-level_count = 24
+pwm_period = 256
+level_count = 22
 gamma = 2.5
 
 
 def level_value(index: int) -> int:
-    return ceil((pwm_period - 1) * (index / (level_count - 1))**gamma)
+    if index == 0:
+        return 0
+    return 1 + round((pwm_period - 2) * (index / (level_count - 1))**gamma)
 
 
 with open('levels.asm', 'w') as file:
