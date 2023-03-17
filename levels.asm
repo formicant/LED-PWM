@@ -1,23 +1,24 @@
-; 22 levels, gamma = 2.5
+; 23 levels, gamma = 2.5
     .dw  0
-    .dw  1
     .dw  2
     .dw  3
-    .dw  5
+    .dw  4
+    .dw  6
     .dw  8
     .dw  12
-    .dw  17
-    .dw  24
-    .dw  32
-    .dw  41
-    .dw  51
-    .dw  64
-    .dw  78
-    .dw  93
-    .dw  111
-    .dw  130
-    .dw  151
-    .dw  174
-    .dw  199
-    .dw  226
+    .dw  16
+    .dw  22
+    .dw  29
+    .dw  37
+    .dw  47
+    .dw  58
+    .dw  70
+    .dw  84
+    .dw  99
+    .dw  116
+    .dw  135
+    .dw  155
+    .dw  177
+    .dw  201
+    .dw  227
     .dw  255

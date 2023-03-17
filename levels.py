@@ -1,12 +1,13 @@
 pwm_period = 256
-level_count = 22
+min_width = 2
+level_count = 23
 gamma = 2.5
 
 
 def level_value(index: int) -> int:
     if index == 0:
         return 0
-    return 1 + round((pwm_period - 2) * (index / (level_count - 1))**gamma)
+    return min_width + round((pwm_period - 1 - min_width) * (index / (level_count - 1))**gamma)
 
 
 with open('levels.asm', 'w') as file:
