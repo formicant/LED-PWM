@@ -1,7 +1,7 @@
 pwm_period = 256
-min_width = 2
-level_count = 23
-gamma = 2.5
+min_width = 0
+level_count = 26
+gamma = 2.4
 
 
 def level_value(index: int) -> int:
