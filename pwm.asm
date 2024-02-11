@@ -1,5 +1,11 @@
-; ATTiny2313 constants
+#define ATtiny2313A  ; comment out for ATtiny2313
+
+; ATtiny2313(A) constants
+#ifdef ATtiny2313A
+.include "tn2313Adef.inc"
+#else
 .include "tn2313def.inc"
+#endif
 
 ; TCCR1A modes
 .equ pwm_clear  = (1<<COM1A1)
@@ -88,8 +94,10 @@ reset:
     out  DDRD, tmp
 
     ; initizlize power consumption (ATTiny2313A only)
-    ; ldi  tmp, (1<<PRUSART) | (1<<PRUSI) | (1<<PRTIM0)
-    ; out  PRR, tmp
+#ifdef ATtiny2313A
+    ldi  tmp, (1<<PRUSART) | (1<<PRUSI) | (1<<PRTIM0)
+    out  PRR, tmp
+#endif
 
     ; initialize interrupt mask
     ldi  tmp, (1<<INT0) | (1<<INT1)

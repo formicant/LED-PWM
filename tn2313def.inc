@@ -1,39 +1,57 @@
-; Register/Bit Definitions for the ATtiny2313
-;
+;***** THIS IS A MACHINE GENERATED FILE - DO NOT EDIT ********************
+;***** Created: 2005-01-11 10:31 ******* Source: ATtiny2313.xml **********
 ;*************************************************************************
+;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
+;* 
+;* Number            : AVR000
+;* File Name         : "tn2313def.inc"
+;* Title             : Register/Bit Definitions for the ATtiny2313
+;* Date              : 2005-01-11
+;* Version           : 2.14
+;* Support E-mail    : avr@atmel.com
+;* Target MCU        : ATtiny2313
+;* 
 ;* DESCRIPTION
-;* When including this file in the assembly program file, all I/O register
+;* When including this file in the assembly program file, all I/O register 
 ;* names and I/O register bit names appearing in the data book can be used.
-;* In addition, the six registers forming the three data pointers X, Y and
-;* Z have been assigned names XL - ZH. Highest RAM address for Internal
-;* SRAM is also defined
-;*
+;* In addition, the six registers forming the three data pointers X, Y and 
+;* Z have been assigned names XL - ZH. Highest RAM address for Internal 
+;* SRAM is also defined 
+;* 
 ;* The Register names are represented by their hexadecimal address.
-;*
+;* 
 ;* The Register Bit names are represented by their bit number (0-7).
-;*
+;* 
 ;* Please observe the difference in using the bit names with instructions
 ;* such as "sbr"/"cbr" (set/clear bit in register) and "sbrs"/"sbrc"
 ;* (skip if bit in register set/cleared). The following example illustrates
 ;* this:
-;*
+;* 
 ;* in    r16,PORTB             ;read PORTB latch
 ;* sbr   r16,(1<<PB6)+(1<<PB5) ;set PB6 and PB5 (use masks, not bit#)
 ;* out   PORTB,r16             ;output to PORTB
-;*
+;* 
 ;* in    r16,TIFR              ;read the Timer Interrupt Flag Register
 ;* sbrc  r16,TOV0              ;test the overflow flag (use bit#)
 ;* rjmp  TOV0_is_set           ;jump if set
 ;* ...                         ;otherwise do something else
 ;*************************************************************************
 
+#ifndef _TN2313DEF_INC_
+#define _TN2313DEF_INC_
+
+
+#pragma partinc 0
 
 ; ***** SPECIFY DEVICE ***************************************************
 .device ATtiny2313
-
+#pragma AVRPART ADMIN PART_NAME ATtiny2313
 .equ	SIGNATURE_000	= 0x1e
 .equ	SIGNATURE_001	= 0x91
 .equ	SIGNATURE_002	= 0x0a
+
+#pragma AVRPART CORE CORE_VERSION V2
+#pragma AVRPART CORE NEW_INSTRUCTIONS lpm rd,z+
 
 
 ; ***** I/O REGISTER DEFINITIONS *****************************************
@@ -57,15 +75,15 @@
 .equ	TCCR0A	= 0x30
 .equ	TCCR1A	= 0x2f
 .equ	TCCR1B	= 0x2e
-.equ	TCNT1L	= 0x2c
 .equ	TCNT1H	= 0x2d
-.equ	OCR1AL	= 0x2a
+.equ	TCNT1L	= 0x2c
 .equ	OCR1AH	= 0x2b
-.equ	OCR1BL	= 0x28
+.equ	OCR1AL	= 0x2a
 .equ	OCR1BH	= 0x29
+.equ	OCR1BL	= 0x28
 .equ	CLKPR	= 0x26
-.equ	ICR1L	= 0x24
 .equ	ICR1H	= 0x25
+.equ	ICR1L	= 0x24
 .equ	GTCCR	= 0x23
 .equ	TCCR1C	= 0x22
 .equ	WDTCR	= 0x21
@@ -152,24 +170,24 @@
 .equ	OCF0B	= 2	; Timer/Counter0 Output Compare Flag 0B
 
 ; OCR0B - Timer/Counter0 Output Compare Register
-.equ	OCR0_0	= 0	;
-.equ	OCR0_1	= 1	;
-.equ	OCR0_2	= 2	;
-.equ	OCR0_3	= 3	;
-.equ	OCR0_4	= 4	;
-.equ	OCR0_5	= 5	;
-.equ	OCR0_6	= 6	;
-.equ	OCR0_7	= 7	;
+.equ	OCR0_0	= 0	; 
+.equ	OCR0_1	= 1	; 
+.equ	OCR0_2	= 2	; 
+.equ	OCR0_3	= 3	; 
+.equ	OCR0_4	= 4	; 
+.equ	OCR0_5	= 5	; 
+.equ	OCR0_6	= 6	; 
+.equ	OCR0_7	= 7	; 
 
 ; OCR0A - Timer/Counter0 Output Compare Register
-.equ	OCR0A_0	= 0	;
-.equ	OCR0A_1	= 1	;
-.equ	OCR0A_2	= 2	;
-.equ	OCR0A_3	= 3	;
-.equ	OCR0A_4	= 4	;
-.equ	OCR0A_5	= 5	;
-.equ	OCR0A_6	= 6	;
-.equ	OCR0A_7	= 7	;
+;.equ	OCR0_0	= 0	; 
+;.equ	OCR0_1	= 1	; 
+;.equ	OCR0_2	= 2	; 
+;.equ	OCR0_3	= 3	; 
+;.equ	OCR0_4	= 4	; 
+;.equ	OCR0_5	= 5	; 
+;.equ	OCR0_6	= 6	; 
+;.equ	OCR0_7	= 7	; 
 
 ; TCCR0A - Timer/Counter  Control Register A
 .equ	WGM00	= 0	; Waveform Generation Mode
@@ -180,21 +198,21 @@
 .equ	COM0A1	= 7	; Compare Match Output A Mode
 
 ; TCNT0 - Timer/Counter0
-.equ	TCNT0_0	= 0	;
-.equ	TCNT0_1	= 1	;
-.equ	TCNT0_2	= 2	;
-.equ	TCNT0_3	= 3	;
-.equ	TCNT0_4	= 4	;
-.equ	TCNT0_5	= 5	;
-.equ	TCNT0_6	= 6	;
-.equ	TCNT0_7	= 7	;
+.equ	TCNT0_0	= 0	; 
+.equ	TCNT0_1	= 1	; 
+.equ	TCNT0_2	= 2	; 
+.equ	TCNT0_3	= 3	; 
+.equ	TCNT0_4	= 4	; 
+.equ	TCNT0_5	= 5	; 
+.equ	TCNT0_6	= 6	; 
+.equ	TCNT0_7	= 7	; 
 
 ; TCCR0B - Timer/Counter Control Register B
 .equ	TCCR0	= TCCR0B	; For compatibility
 .equ	CS00	= 0	; Clock Select
 .equ	CS01	= 1	; Clock Select
 .equ	CS02	= 2	; Clock Select
-.equ	WGM02	= 3	;
+.equ	WGM02	= 3	; 
 .equ	FOC0B	= 6	; Force Output Compare B
 .equ	FOC0A	= 7	; Force Output Compare B
 
@@ -254,13 +272,13 @@
 
 ; ***** EXTERNAL_INTERRUPT ***********
 ; GIMSK - General Interrupt Mask Register
-.equ	PCIE	= 5	;
+.equ	PCIE	= 5	; 
 .equ	INT0	= 6	; External Interrupt Request 0 Enable
 .equ	INT1	= 7	; External Interrupt Request 1 Enable
 
 ; EIFR - Extended Interrupt Flag Register
 .equ	GIFR	= EIFR	; For compatibility
-.equ	PCIF	= 5	;
+.equ	PCIF	= 5	; 
 .equ	INTF0	= 6	; External Interrupt Flag 0
 .equ	INTF1	= 7	; External Interrupt Flag 1
 
@@ -315,7 +333,7 @@
 ; ACSR - Analog Comparator Control And Status Register
 .equ	ACIS0	= 0	; Analog Comparator Interrupt Mode Select bit 0
 .equ	ACIS1	= 1	; Analog Comparator Interrupt Mode Select bit 1
-.equ	ACIC	= 2	;
+.equ	ACIC	= 2	; 
 .equ	ACIE	= 3	; Analog Comparator Interrupt Enable
 .equ	ACI	= 4	; Analog Comparator Interrupt Flag
 .equ	ACO	= 5	; Analog Compare Output
@@ -329,38 +347,38 @@
 
 ; ***** PORTD ************************
 ; PORTD - Data Register, Port D
-.equ	PORTD0	= 0	;
+.equ	PORTD0	= 0	; 
 .equ	PD0	= 0	; For compatibility
-.equ	PORTD1	= 1	;
+.equ	PORTD1	= 1	; 
 .equ	PD1	= 1	; For compatibility
-.equ	PORTD2	= 2	;
+.equ	PORTD2	= 2	; 
 .equ	PD2	= 2	; For compatibility
-.equ	PORTD3	= 3	;
+.equ	PORTD3	= 3	; 
 .equ	PD3	= 3	; For compatibility
-.equ	PORTD4	= 4	;
+.equ	PORTD4	= 4	; 
 .equ	PD4	= 4	; For compatibility
-.equ	PORTD5	= 5	;
+.equ	PORTD5	= 5	; 
 .equ	PD5	= 5	; For compatibility
-.equ	PORTD6	= 6	;
+.equ	PORTD6	= 6	; 
 .equ	PD6	= 6	; For compatibility
 
-; DDRD - Data Direction Register, Port D
-.equ	DDD0	= 0	;
-.equ	DDD1	= 1	;
-.equ	DDD2	= 2	;
-.equ	DDD3	= 3	;
-.equ	DDD4	= 4	;
-.equ	DDD5	= 5	;
-.equ	DDD6	= 6	;
+; DDRD
+.equ	DDD0	= 0	; 
+.equ	DDD1	= 1	; 
+.equ	DDD2	= 2	; 
+.equ	DDD3	= 3	; 
+.equ	DDD4	= 4	; 
+.equ	DDD5	= 5	; 
+.equ	DDD6	= 6	; 
 
 ; PIND - Input Pins, Port D
-.equ	PIND0	= 0	;
-.equ	PIND1	= 1	;
-.equ	PIND2	= 2	;
-.equ	PIND3	= 3	;
-.equ	PIND4	= 4	;
-.equ	PIND5	= 5	;
-.equ	PIND6	= 6	;
+.equ	PIND0	= 0	; 
+.equ	PIND1	= 1	; 
+.equ	PIND2	= 2	; 
+.equ	PIND3	= 3	; 
+.equ	PIND4	= 4	; 
+.equ	PIND5	= 5	; 
+.equ	PIND6	= 6	; 
 
 
 ; ***** EEPROM ***********************
@@ -391,8 +409,8 @@
 .equ	EEMPE	= 2	; EEPROM Master Write Enable
 .equ	EEMWE	= EEMPE	; For compatibility
 .equ	EERIE	= 3	; EEProm Ready Interrupt Enable
-.equ	EEPM0	= 4	;
-.equ	EEPM1	= 5	;
+.equ	EEPM0	= 4	; 
+.equ	EEPM1	= 5	; 
 
 
 ; ***** PORTA ************************
@@ -431,7 +449,7 @@
 .equ	PGERS	= 1	; Page Erase
 .equ	PGWRT	= 2	; Page Write
 .equ	RFLB	= 3	; Read Fuse and Lock Bits
-.equ	CTPB	= 4	; Clear Temporary Page Buffer
+.equ	CTPB	= 4
 
 ; MCUCR - MCU Control Register
 .equ	ISC00	= 0	; Interrupt Sense Control 0 bit 0
@@ -468,7 +486,7 @@
 
 ; GTCCR - General Timer Counter Control Register
 .equ	SFIOR	= GTCCR	; For compatibility
-.equ	PSR10	= 0	;
+.equ	PSR10	= 0	; 
 
 ; PCMSK - Pin-Change Mask register
 .equ	PCINT0	= 0	; Pin-Change Interrupt 0
@@ -543,6 +561,7 @@
 .equ	USISIE	= 7	; Start Condition Interrupt Enable
 
 
+
 ; ***** LOCKSBITS ********************************************************
 .equ	LB1	= 0	; Lockbit
 .equ	LB2	= 1	; Lockbit
@@ -573,6 +592,7 @@
 .equ	SELFPRGEN	= 0	; Self Programming Enable
 
 
+
 ; ***** CPU REGISTER DEFINITIONS *****************************************
 .def	XH	= r27
 .def	XL	= r26
@@ -580,6 +600,7 @@
 .def	YL	= r28
 .def	ZH	= r31
 .def	ZL	= r30
+
 
 
 ; ***** DATA MEMORY DECLARATIONS *****************************************
@@ -592,6 +613,11 @@
 .equ	E2END	= 0x007f
 .equ	EEPROMEND	= 0x007f
 .equ	EEADRBITS	= 7
+#pragma AVRPART MEMORY PROG_FLASH 2048
+#pragma AVRPART MEMORY EEPROM 128
+#pragma AVRPART MEMORY INT_SRAM SIZE 128
+#pragma AVRPART MEMORY INT_SRAM START_ADDR 0x60
+
 
 
 ; ***** BOOTLOADER DECLARATIONS ******************************************
@@ -600,6 +626,7 @@
 .equ	RWW_START_ADDR	= 0x0
 .equ	RWW_STOP_ADDR	= 0x0
 .equ	PAGESIZE	= 16
+
 
 
 ; ***** INTERRUPT VECTORS ************************************************
@@ -617,14 +644,17 @@
 .equ	UTXCaddr	= 0x0009	; USART, Tx Complete
 .equ	UTXC0addr	= 0x0009	; For compatibility
 .equ	ACIaddr	= 0x000a	; Analog Comparator
-.equ	PCIaddr	= 0x000b	; Pin Change Interrupt Request
-.equ	OC1Baddr	= 0x000c	; Timer/Counter1 Compare Match B
-.equ	OC0Aaddr	= 0x000d	; Timer/Counter0 Compare Match A
-.equ	OC0Baddr	= 0x000e	; Timer/Counter0 Compare Match B
+.equ	PCIaddr	= 0x000b	; 
+.equ	OC1Baddr	= 0x000c	; 
+.equ	OC0Aaddr	= 0x000d	; 
+.equ	OC0Baddr	= 0x000e	; 
 .equ	USI_STARTaddr	= 0x000f	; USI Start Condition
 .equ	USI_OVFaddr	= 0x0010	; USI Overflow
-.equ	ERDYaddr	= 0x0011	; EEPROM Ready
+.equ	ERDYaddr	= 0x0011	; 
 .equ	WDTaddr	= 0x0012	; Watchdog Timer Overflow
 
 .equ	INT_VECTORS_SIZE	= 19	; size in words
 
+#endif  /* _TN2313DEF_INC_ */
+
+; ***** END OF FILE ******************************************************
