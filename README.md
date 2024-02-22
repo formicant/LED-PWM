@@ -1,12 +1,22 @@
 # LED-PWM
 
-A program for `ATTiny2313` to control LED lighting brightness using a rotary encoder.
+A program for `ATtiny2313(A)` to control LED lighting brightness using a rotary encoder.
+
+
+## Profiles
+
+The program can be build in one for two profiles:
+- `lena` profile uses an `ATtiny2313` chip
+- `saxa` profile uses an `ATtiny2313A` chip
+
+The brightness levels and bounce periods are also different in the two profiles.
 
 
 ## Pins
 
 ``` 
-                           ATTiny 2313
+                        ATtiny 2313  (Lena)
+                        ATtiny 2313A (Saxa)
                            ┌───┐ ┌───┐
             (RESET/dW) PA2─┤1  ╰─╯ 20├─VCC
                  (RXD) PD0─┤2      19├─PB7 (UCSK/SCL/PCINT7)
@@ -56,10 +66,7 @@ avrdude -c usbasp-clone -p t2313 -B 250kHz -U lfuse:w:0xE4:m
 
 ## Flashing
 
-To flash the controller, use `flash.sh`:
-```
-avrdude -c usbasp-clone -p t2313 -U flash:w:pwm.hex:a
-```
+To flash the controller, use `flash-saxa.sh` or `flash-lena.sh` depending on the profile.
 
 
 ## Operation

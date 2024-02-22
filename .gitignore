@@ -6,3 +6,4 @@
 *.wat
 *.obj
 *.ly1
+*.eep.hex

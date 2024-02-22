@@ -1,0 +1,25 @@
+; lena
+; 23 levels, gamma = 2.5
+    .dw  0
+    .dw  1
+    .dw  2
+    .dw  3
+    .dw  5
+    .dw  7
+    .dw  11
+    .dw  16
+    .dw  21
+    .dw  28
+    .dw  36
+    .dw  46
+    .dw  57
+    .dw  69
+    .dw  83
+    .dw  99
+    .dw  116
+    .dw  134
+    .dw  155
+    .dw  177
+    .dw  201
+    .dw  227
+    .dw  255

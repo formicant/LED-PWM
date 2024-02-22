@@ -1,11 +1,10 @@
-#define ATtiny2313A  ; comment out for ATtiny2313
-
 ; ATtiny2313(A) constants
-#ifdef ATtiny2313A
-.include "tn2313Adef.inc"
-#else
+#ifdef LENA
 .include "tn2313def.inc"
+#else
+.include "tn2313Adef.inc"
 #endif
+
 
 ; TCCR1A modes
 .equ pwm_clear  = (1<<COM1A1)
@@ -30,7 +29,11 @@
 .equ output_mask_d = 0  ; all pins are inputs
 
 ; Constants
+#ifdef LENA
+.equ bounce_period =  50  ; µs
+#else
 .equ bounce_period = 100  ; µs
+#endif
 .equ sleep_time  =  3500  ; times ~290 µs = ~1 s
 
 ; Register aliases
@@ -67,7 +70,11 @@
 
 ; PWM level table
 levels:
-.include "levels.asm"
+#ifdef LENA
+.include "levels-lena.asm"
+#else
+.include "levels-saxa.asm"
+#endif
 levels_end:
 .equ level_count = levels_end - levels
 
@@ -93,8 +100,8 @@ reset:
     ldi  tmp, output_mask_d
     out  DDRD, tmp
 
+#ifndef LENA
     ; initizlize power consumption (ATTiny2313A only)
-#ifdef ATtiny2313A
     ldi  tmp, (1<<PRUSART) | (1<<PRUSI) | (1<<PRTIM0)
     out  PRR, tmp
 #endif
